@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: URL Shortener API
+  description: API for generating shortened URLs.
+  version: 1.0.0
+paths:
+  /shorten:
+    post:
+      summary: Create a short URL
+      description: This endpoint creates a shortened version of a given URL. If the URL has already been shortened, it returns the existing short URL.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: The original URL to shorten.
+                  example: "https://example.com/long-url"
+      responses:
+        "200":
+          description: Successfully created short URL.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  short_url:
+                    type: string
+                    description: The shortened URL.
+                    example: "https://short.ly/abc123"
+        "400":
+          description: Bad Request. URL is required.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing URL in the request body.
+                    example: "URL is required"
+components:
+  schemas:
+    ShortenURLRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The URL to shorten.
+          example: "https://example.com/long-url"
+    ShortenURLResponse:
+      type: object
+      properties:
+        short_url:
+          type: string
+          description: The shortened URL.
+          example: "https://short.ly/abc123"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message.
+          example: "URL is required"
