@@ -43,10 +43,11 @@ def index():
 
 @app.route("/<id>")
 def url_direct(id):
-    return id
-    # to implement: search database to see if the ID exists
-    # if it exists, get the url from the website and redirect from there
-    # if it does not exist, throw a 404 error to the user
+    url_entry = collection.find_one({"short_id": id})
+    if url_entry:
+        return redirect(url_entry["original_url"])
+    else:
+        return jsonify({"error": "URL not found"}), 404
 
 
 @app.route("/create", methods=(["POST"]))
