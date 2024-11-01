@@ -70,6 +70,3 @@ def create_url():
 
     short_url = request.host_url + short_id
     return jsonify({"short_url": short_url})
-    # get url from post request
-    # generate shortened link alias
-    # put into database

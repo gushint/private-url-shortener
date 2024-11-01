@@ -12,3 +12,7 @@ active or not
 can specify what shortened url will be
 
 endpoint to stuff above
+
+# Todo
+
+debug swagger
