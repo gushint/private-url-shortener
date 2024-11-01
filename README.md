@@ -8,6 +8,7 @@ A Private URL shortener with advanced features.
 
 counter of times that url has been used
 time/date that url was created
-active
+active or not
+can specify what shortened url will be
 
 endpoint to stuff above
