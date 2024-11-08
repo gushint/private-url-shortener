@@ -26,7 +26,7 @@ except Exception as e:
 
 
 app = Flask(__name__)
-app.config["SWAGGER"] = {"title": "My API", "uiversion": 3}
+app.config["SWAGGER"] = {"title": "My API"}
 swagger = Swagger(app)
 
 
@@ -99,7 +99,6 @@ def deactivate_url(id):
 
 
 @app.route("/create", methods=(["POST"]))
-@swag_from("./doc/flasgger/create.yml")
 def create_url():
     original_url = request.json.get("url")
     custom_id = request.json.get("custom_id")

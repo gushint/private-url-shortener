@@ -1,67 +1,49 @@
-openapi: 3.0.0
+swagger: "2.0"
 info:
-  title: URL Shortener API
-  description: API for generating shortened URLs.
+  description: API for URL Shortener
   version: 1.0.0
+  title: URL Shortener API
+  contact:
+    email: support@example.com
+host: localhost:5000
+basePath: /api
+schemes:
+  - http
 paths:
   /shorten:
     post:
-      summary: Create a short URL
-      description: This endpoint creates a shortened version of a given URL. If the URL has already been shortened, it returns the existing short URL.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                url:
-                  type: string
-                  description: The original URL to shorten.
-                  example: "https://example.com/long-url"
+      tags:
+        - URL
+      summary: Create a shortened URL
+      description: Takes a long URL and returns a shortened version
+      operationId: createShortUrl
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: url
+          description: URL to be shortened
+          required: true
+          schema:
+            type: object
+            required:
+              - longUrl
+            properties:
+              longUrl:
+                type: string
+                example: "https://www.example.com"
       responses:
-        "200":
-          description: Successfully created short URL.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  short_url:
-                    type: string
-                    description: The shortened URL.
-                    example: "https://short.ly/abc123"
-        "400":
-          description: Bad Request. URL is required.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Error message indicating missing URL in the request body.
-                    example: "URL is required"
-components:
-  schemas:
-    ShortenURLRequest:
-      type: object
-      properties:
-        url:
-          type: string
-          description: The URL to shorten.
-          example: "https://example.com/long-url"
-    ShortenURLResponse:
-      type: object
-      properties:
-        short_url:
-          type: string
-          description: The shortened URL.
-          example: "https://short.ly/abc123"
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error message.
-          example: "URL is required"
+        200:
+          description: Successfully created shortened URL
+          schema:
+            type: object
+            properties:
+              shortUrl:
+                type: string
+                example: "http://short.url/abc123"
+        400:
+          description: Invalid URL supplied
+        500:
+          description: Internal server error
