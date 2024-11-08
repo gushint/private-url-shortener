@@ -6,7 +6,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import string
 import random
-
+from datetime import datetime
 
 load_dotenv()
 
@@ -49,24 +49,45 @@ def url_direct(id):
     else:
         return jsonify({"error": "URL not found"}), 404
 
+@app.route("/info/<id>", methods=(["GET"]))
+def url_info(id):
+    url_entry = collection.find_one({"short_id": id})
+    if url_entry:
+        return jsonify({
+            "original_url": url_entry["original_url"],
+            "short_id": url_entry["short_id"],
+            "created_at": url_entry["created_at"]
+        })
+    else:
+        return jsonify({"error": "URL not found"}), 404
 
 @app.route("/create", methods=(["POST"]))
 @swag_from("./doc/flasgger/create.yml")
 def create_url():
     original_url = request.json.get("url")
+    custom_id = request.json.get("custom_id")
     if not original_url:
         return jsonify({"error": "URL is required"}), 400
-    url_entry = collection.find_one({"original_url": original_url})
-    if url_entry:
-        short_id = url_entry["short_id"]
+    if custom_id:
+        if collection.find_one({"short_id": custom_id}):
+            return jsonify({"error": "Custom ID already exists"}), 400
+        short_id = custom_id
     else:
+        url_entry = collection.find_one({"original_url": original_url})
+        if url_entry:
+            short_id = url_entry["short_id"]
+        else:
         # Generate a unique short ID
-        short_id = generate_short_id()
-        while collection.find_one({"short_id": short_id}):
             short_id = generate_short_id()
+            while collection.find_one({"short_id": short_id}):
+                short_id = generate_short_id()
 
         # Save to the database
-        collection.insert_one({"original_url": original_url, "short_id": short_id})
+        collection.insert_one({
+            "original_url": original_url, 
+            "short_id": short_id,
+            "created_at": datetime.now()
+            })
 
     short_url = request.host_url + short_id
     return jsonify({"short_url": short_url})
